@@ -73,6 +73,7 @@ function love.load()
   font = love.graphics.newFont("fonts/Roboto-Regular.ttf", 16)
   fontlarge = love.graphics.newFont("fonts/Roboto-Regular.ttf", 32)
 
+  -- shouldnt change this. A lot of the drawing is hard-coded for now. 
   scale = 50
 
 end
@@ -149,10 +150,21 @@ function love.draw()
 
   -- drawing the coordinates
   love.graphics.push()
-  love.graphics.translate(scale*4, -scale*4)
-  love.graphics.setColor(255, 255, 255, 10)
-  love.graphics.rectangle("fill", 0,0, 100, 100)
-  love.graphics.translate(25, 10)
+  love.graphics.translate(scale*4, -scale*6)
+  love.graphics.setColor(0, 0, 0, 10)
+  love.graphics.rectangle("fill", 0,0, scale*2, scale*2)
+  love.graphics.setColor(0, 0, 0, 50)
+  love.graphics.rectangle("line", 0,0, scale*2, scale*2)
+  love.graphics.setColor(200, 200, 200)
+  love.graphics.line(scale*0.2, scale, scale*2 - scale*0.2, scale)
+
+  love.graphics.setColor(236, 240, 241)
+  love.graphics.setFont(fontlarge)
+  love.graphics.print(operations[operation].sym, 6, scale*2 - fontlarge:getHeight() +3)
+
+
+  love.graphics.setFont(font)
+  love.graphics.translate(30, 3)
   local sep = 25
   for i=1, #arrows do
     local a = arrows[i]
@@ -160,9 +172,6 @@ function love.draw()
   end
   --arrow.print(res, 0,(#arrows)*sep)
 
-  love.graphics.setColor(236, 240, 241)
-  love.graphics.setFont(fontlarge)
-  love.graphics.print(operations[operation].sym, -25, (#arrows-1)*sep - fontlarge:getHeight()/4)
   love.graphics.pop()
 
 
