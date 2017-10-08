@@ -1,4 +1,4 @@
-local vec = require 'util.vec'
+local vec = require 'lib.vec'
 
 local arrow = {}
 
@@ -42,7 +42,7 @@ function arrow.print(a, x,y)
   -- we should format the string so there is same space between commas
   local txt = "(" .. tx .. ", " .. ty .. ")"
   love.graphics.setColor(a.color)
-  love.graphics.print(txt, x,y)
+  love.graphics.print(txt, math.floor(x),math.floor(y))
 end
 
 return arrow

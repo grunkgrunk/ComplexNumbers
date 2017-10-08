@@ -1,5 +1,5 @@
-local vec = require 'util.vec'
-local arrow = require 'util.arrow'
+local vec = require 'lib.vec'
+local arrow = require 'lib.arrow'
 
 local operations = {
   {sym='+', fn='add'},
@@ -39,7 +39,7 @@ function drawcoordsys()
 
     if txt ~= 0 then
       love.graphics.line(x, -lh, x, lh)
-      love.graphics.print(txt, x - font:getWidth(tostring(txt))/2, lh+margin)
+      love.graphics.print(txt, math.floor(x - font:getWidth(tostring(txt))/2), math.floor(lh+margin))
     end
   end
 
@@ -51,7 +51,7 @@ function drawcoordsys()
 
     if txt ~= 0 then
       love.graphics.line(-lw,y,lw,y)
-      love.graphics.print(tostring(txt) .. "i", lw+margin, y - font:getHeight()/2)
+      love.graphics.print(tostring(txt) .. "i", math.floor(lw+margin), math.floor(y - font:getHeight()/2))
     end
   end
 end
@@ -158,7 +158,7 @@ function love.draw()
 
   love.graphics.setColor(236, 240, 241)
   love.graphics.setFont(fontlarge)
-  love.graphics.print(operations[operation].sym, 6, scale*2 - fontlarge:getHeight() +3)
+  love.graphics.print(operations[operation].sym, 6, math.floor(scale*2 - fontlarge:getHeight() +3))
 
   love.graphics.setFont(font)
   love.graphics.translate(30, 3)
