@@ -1,9 +1,6 @@
 local vec = require 'util.vec'
 local arrow = require 'util.arrow'
 
--- draw the current operation better
--- be able to change the current operation
-
 local operations = {
   {sym='+', fn='add'},
   {sym='-', fn='sub'},
@@ -73,8 +70,9 @@ function love.load()
   font = love.graphics.newFont("fonts/Roboto-Regular.ttf", 16)
   fontlarge = love.graphics.newFont("fonts/Roboto-Regular.ttf", 32)
 
-  -- shouldnt change this. A lot of the drawing is hard-coded for now. 
+  -- shouldnt change this. A lot of the drawing is hard-coded for now.
   scale = 50
+  infox, infoy = scale*4, -scale*6
 
 end
 
@@ -97,7 +95,7 @@ function love.update(dt)
   -- a table so that i can add more if i want to
   local v = arrows[1].dir
 
-  -- add up all numbers except the last - this is the resulting number
+  -- add up all numbers except the last. the last is the resulting number
   for i=2, #arrows-1 do
     local fn = operations[operation].fn
     v = vec[fn](v, arrows[i].dir)
@@ -146,11 +144,9 @@ function love.draw()
     arrow.draw(a,scale)
   end
 
-  --arrow.draw(res,scale)
-
-  -- drawing the coordinates
+  -- draw the infobox
   love.graphics.push()
-  love.graphics.translate(scale*4, -scale*6)
+  love.graphics.translate(infox, infoy)
   love.graphics.setColor(0, 0, 0, 10)
   love.graphics.rectangle("fill", 0,0, scale*2, scale*2)
   love.graphics.setColor(0, 0, 0, 50)
@@ -162,7 +158,6 @@ function love.draw()
   love.graphics.setFont(fontlarge)
   love.graphics.print(operations[operation].sym, 6, scale*2 - fontlarge:getHeight() +3)
 
-
   love.graphics.setFont(font)
   love.graphics.translate(30, 3)
   local sep = 25
@@ -170,7 +165,6 @@ function love.draw()
     local a = arrows[i]
     arrow.print(a, 0,(i-1)*sep)
   end
-  --arrow.print(res, 0,(#arrows)*sep)
 
   love.graphics.pop()
 
@@ -178,18 +172,31 @@ function love.draw()
   if selected ~= nil then
     love.graphics.setColor(selected.color)
   else
-    love.graphics.setColor(255,255,255)
+    love.graphics.setColor(236, 240, 241)
   end
   love.graphics.setLineWidth(2)
   love.graphics.circle('line', mx*scale, my*scale, 5)
 end
 
+function nextoperation()
+  operation = operation + 1
+  if operation > #operations then
+    operation = 1
+  end
+  -- add some fancy animation
+end
+
 function love.keypressed(key, scan, rep)
   if key == 'q' or key == 'escape' then love.event.quit() end
   if key == 'tab' then
-    operation = operation + 1
-    if operation > #operations then
-      operation = 1
-    end
+    nextoperation()
+  end
+end
+
+function love.mousepressed(x,y, btn)
+  -- if the mouse is inside the infox,
+  if x > w/2 + infox and x < w/2 + infox + scale*2
+    and y > h/2 + infoy and y < h/2 + infoy + scale*2 then
+      nextoperation()
   end
 end
