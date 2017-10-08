@@ -27,7 +27,9 @@ function drawcoordsys()
     love.graphics.line(-w/2,y,w/2,y)
   end
 
+
   local margin = 4
+  love.graphics.setFont(font)
   love.graphics.setColor(236, 240, 241)
   -- numbers on the x - axis
   for ix = 0, w/scale do
@@ -104,7 +106,7 @@ function love.update(dt)
 
   if love.mouse.isDown(1) then
     -- select the closest arrow to the mouse
-    -- only if its 0.3 coordinate units away from the mosue
+    -- only select if it's 0.3 coordinate units away from the mosue
     if not selected then
       local mindist = 10000
       for i=1, #arrows do
@@ -128,7 +130,7 @@ function love.update(dt)
 end
 
 function love.draw()
-  love.graphics.setFont(font)
+
   love.graphics.clear(44, 62, 80)
   love.graphics.translate(w/2, h/2)
   love.graphics.setLineWidth(0.5)
