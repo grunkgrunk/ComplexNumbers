@@ -38,7 +38,9 @@ end
 
 function arrow.print(a, x,y)
   local d = a.dir
-  local txt = "(" .. d.x .. ", " .. d.y .. ")"
+  local tx,ty = math.floor(d.x*10+0.5)/10, math.floor(d.y*10)/10
+  -- we should format the string so there is same space between commas
+  local txt = "(" .. tx .. ", " .. ty .. ")"
   love.graphics.setColor(a.color)
   love.graphics.print(txt, x,y)
 end

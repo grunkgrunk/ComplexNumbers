@@ -4,19 +4,13 @@ local arrow = require 'util.arrow'
 -- draw the current operation better
 -- be able to change the current operation
 
-local scale = 50
-
--- should rework how i store the operations
 local operations = {
-  add = '+',
-  sub = '-',
-  div = '/',
-  mul = '×',
+  {sym='+', fn='add'},
+  {sym='-', fn='sub'},
+  {sym='×', fn='mul'}
 }
 
---local oplist = {'add', 'sub', 'div', }
-
-local operator = 'mul'
+local operation = 1
 
 function drawcoordsys()
   -- numbers on the number-lines are off
@@ -48,8 +42,6 @@ function drawcoordsys()
       love.graphics.line(x, -lh, x, lh)
       love.graphics.print(txt, x - font:getWidth(tostring(txt))/2, lh+margin)
     end
-
-
   end
 
   -- numbers on the y-axis
@@ -65,8 +57,10 @@ function drawcoordsys()
   end
 end
 
-local arrows = {arrow.new(1,1, {230, 126, 34} ), arrow.new(-1, 1, {39, 174, 96})}
-local res = arrow.new(0,0, {41, 128, 185})
+-- the last arrow is the resulting arrow
+local arrows = {arrow.new(1,1, {230, 126, 34} ), arrow.new(-1, 1, {39, 174, 96}),
+arrow.new(0,0, {41, 128, 185})}
+
 
 local collision = false
 local selected = nil
@@ -74,9 +68,13 @@ local selected = nil
 function love.load()
   love.graphics.setLineStyle("smooth")
   love.mouse.setVisible(false)
+  love.window.setMode(800, 800)
   w,h = love.graphics.getDimensions()
   font = love.graphics.newFont("fonts/Roboto-Regular.ttf", 16)
-  love.graphics.setFont(font)
+  fontlarge = love.graphics.newFont("fonts/Roboto-Regular.ttf", 32)
+
+  scale = 50
+
 end
 
 function love.update(dt)
@@ -93,6 +91,17 @@ function love.update(dt)
   end
 
   local m = vec.new(mx,-my)
+
+  -- i have all my arrow objects in
+  -- a table so that i can add more if i want to
+  local v = arrows[1].dir
+
+  -- add up all numbers except the last - this is the resulting number
+  for i=2, #arrows-1 do
+    local fn = operations[operation].fn
+    v = vec[fn](v, arrows[i].dir)
+  end
+  arrows[#arrows].dir = v
 
   if love.mouse.isDown(1) then
     -- select the closest arrow to the mouse
@@ -116,17 +125,11 @@ function love.update(dt)
     selected.dir = vec.new(m.x,m.y)
   end
 
-  -- i have all my arrow objects in
-  -- a table so that i can add more if i want to
-  local v = arrows[1].dir
 
-  for i=2, #arrows do
-    v = vec[operator](v, arrows[i].dir)
-  end
-  res.dir = v
 end
 
 function love.draw()
+  love.graphics.setFont(font)
   love.graphics.clear(44, 62, 80)
   love.graphics.translate(w/2, h/2)
   love.graphics.setLineWidth(0.5)
@@ -136,18 +139,32 @@ function love.draw()
   --love.graphics.setColor(0,0,0)
   --love.graphics.rectangle("fill", -w/2.1,-h/2, scale*2, scale)
 
-  local sep = 25
+
   for i=1, #arrows do
     local a = arrows[i]
     arrow.draw(a,scale)
-    arrow.print(a, w/4,(i-1)*sep-w/4)
   end
 
-  arrow.draw(res,scale)
-  arrow.print(res, w/4,(#arrows)*sep-w/4)
+  --arrow.draw(res,scale)
 
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.print(operations[operator], w/4-20, (#arrows-1)*sep-w/4)
+  -- drawing the coordinates
+  love.graphics.push()
+  love.graphics.translate(scale*4, -scale*4)
+  love.graphics.setColor(255, 255, 255, 10)
+  love.graphics.rectangle("fill", 0,0, 100, 100)
+  love.graphics.translate(25, 10)
+  local sep = 25
+  for i=1, #arrows do
+    local a = arrows[i]
+    arrow.print(a, 0,(i-1)*sep)
+  end
+  --arrow.print(res, 0,(#arrows)*sep)
+
+  love.graphics.setColor(236, 240, 241)
+  love.graphics.setFont(fontlarge)
+  love.graphics.print(operations[operation].sym, -25, (#arrows-1)*sep - fontlarge:getHeight()/4)
+  love.graphics.pop()
+
 
   if selected ~= nil then
     love.graphics.setColor(selected.color)
@@ -160,4 +177,10 @@ end
 
 function love.keypressed(key, scan, rep)
   if key == 'q' or key == 'escape' then love.event.quit() end
+  if key == 'tab' then
+    operation = operation + 1
+    if operation > #operations then
+      operation = 1
+    end
+  end
 end
