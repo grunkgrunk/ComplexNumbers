@@ -1,6 +1,9 @@
 local vec = require 'lib.vec'
 local arrow = require 'lib.arrow'
 
+-- todo: make the size of the window scalable.
+-- this requires graphics to be drawn differently
+
 local operations = {
   {sym='+', fn='add'},
   {sym='-', fn='sub'},
@@ -56,8 +59,9 @@ function drawcoordsys()
   end
 end
 
--- the last arrow is the resulting arrow
+
 local arrows = {arrow.new(1,1, {230, 126, 34} ), arrow.new(-1, 1, {39, 174, 96}),
+-- the last arrow is the resulting arrow:
 arrow.new(0,0, {41, 128, 185})}
 
 
@@ -93,11 +97,13 @@ function love.update(dt)
 
   local m = vec.new(mx,-my)
 
-  -- i have all my arrow objects in
-  -- a table so that i can add more if i want to
+  -- here we calculate the blue arrow
+  -- Should add some animation here
+  -- get the first arrow
   local v = arrows[1].dir
 
-  -- add up all numbers except the last. the last is the resulting number
+  -- use the current operation on all the other numbers in the table, except the last.
+  -- the last number is the resulting number, so we want to set that to what we calculate here.
   for i=2, #arrows-1 do
     local fn = operations[operation].fn
     v = vec[fn](v, arrows[i].dir)
@@ -106,7 +112,7 @@ function love.update(dt)
 
   if love.mouse.isDown(1) then
     -- select the closest arrow to the mouse
-    -- only select if it's 0.3 coordinate units away from the mosue
+    -- only select it if it's 0.3 coordinate units away from the mosue
     if not selected then
       local mindist = 10000
       for i=1, #arrows do
@@ -136,10 +142,6 @@ function love.draw()
   love.graphics.setLineWidth(0.5)
 
   drawcoordsys()
-
-  --love.graphics.setColor(0,0,0)
-  --love.graphics.rectangle("fill", -w/2.1,-h/2, scale*2, scale)
-
 
   for i=1, #arrows do
     local a = arrows[i]
