@@ -6,6 +6,7 @@ local arrow = require 'util.arrow'
 
 local scale = 50
 
+-- should rework how i store the operations
 local operations = {
   add = '+',
   sub = '-',
