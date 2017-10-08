@@ -1,6 +1,9 @@
-local vec = require 'vec'
-local arrow = require 'arrow'
---×
+local vec = require 'util.vec'
+local arrow = require 'util.arrow'
+
+-- draw the current operation better
+-- be able to change the current operation
+
 local scale = 50
 
 local operations = {
@@ -32,19 +35,20 @@ function drawcoordsys()
     love.graphics.line(-w/2,y,w/2,y)
   end
 
-  local margin = 2
+  local margin = 4
   love.graphics.setColor(236, 240, 241)
   -- numbers on the x - axis
   for ix = 0, w/scale do
     local lh = scale/16
     local x = w/2-ix*scale
-    local txt = w/scale-w/scale/2-ix
+    local txt = math.floor(w/scale-w/scale/2-ix)
 
     if txt ~= 0 then
       love.graphics.line(x, -lh, x, lh)
+      love.graphics.print(txt, x - font:getWidth(tostring(txt))/2, lh+margin)
     end
 
-    love.graphics.print(txt, x, lh+margin)
+
   end
 
   -- numbers on the y-axis
@@ -55,7 +59,7 @@ function drawcoordsys()
 
     if txt ~= 0 then
       love.graphics.line(-lw,y,lw,y)
-      love.graphics.print(tostring(txt) .. "i", lw+margin, y)
+      love.graphics.print(tostring(txt) .. "i", lw+margin, y - font:getHeight()/2)
     end
   end
 end
@@ -67,9 +71,10 @@ local collision = false
 local selected = nil
 
 function love.load()
+  love.graphics.setLineStyle("smooth")
   love.mouse.setVisible(false)
   w,h = love.graphics.getDimensions()
-  font = love.graphics.newFont("Roboto-Regular.ttf", 16)
+  font = love.graphics.newFont("fonts/Roboto-Regular.ttf", 16)
   love.graphics.setFont(font)
 end
 
@@ -110,6 +115,8 @@ function love.update(dt)
     selected.dir = vec.new(m.x,m.y)
   end
 
+  -- i have all my arrow objects in
+  -- a table so that i can add more if i want to
   local v = arrows[1].dir
 
   for i=2, #arrows do
@@ -124,6 +131,9 @@ function love.draw()
   love.graphics.setLineWidth(0.5)
 
   drawcoordsys()
+
+  --love.graphics.setColor(0,0,0)
+  --love.graphics.rectangle("fill", -w/2.1,-h/2, scale*2, scale)
 
   local sep = 25
   for i=1, #arrows do

@@ -1,4 +1,4 @@
-local vec = require 'vec'
+local vec = require 'util.vec'
 
 local arrow = {}
 

@@ -1,3 +1,8 @@
+-- i know, i know
+-- this might not be a pretty vector implementation, and
+-- it could certainly be improved with metatables...
+-- but it works fine for our purposes
+
 local vec = {}
 
 function vec.new(x,y)
