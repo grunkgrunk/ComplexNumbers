@@ -25,9 +25,9 @@ function vec.mul(v1, v2)
 end
 
 function vec.div(v1, v2)
-  local d = v2.x*v2.x+v2.y*v2.y
+  local d = vec.magSq(v2)
   local x = (v1.x*v2.x+v1.y*v2.y)/d
-  local y = (v1.y*v2.x+v1.x*v2.y)/d
+  local y = (v1.y*v2.x-v1.x*v2.y)/d
   return vec.new(x,y)
 end
 

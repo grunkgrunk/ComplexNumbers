@@ -127,9 +127,10 @@ function love.update(dt)
         -- select the closest arrow to the mouse
         -- only select it if it's 0.3 coordinate units away from the mosue
         -- don't select the last arrow, because that's the blue answer arrow!
+        -- also don't select any 'hidden' arrows i.e. arrows that have disappeared because of operations with only one input
         if not selected then
             local mindist = 10000
-            for i = 1, #arrows-1 do
+            for i = 1, operations[operation].args do
                 local a = arrows[i]
                 local d = vec.dst(m, a.dir)
                 if d < 0.3 and d < mindist then
