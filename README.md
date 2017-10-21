@@ -10,4 +10,4 @@ This is a very simple program that shows three complex numbers in the complex pl
 To use this program you must download this project and the love2d application from https://love2d.org/. Then drag the downloaded folder onto the love2d-app. Now you are ready to learn about complex numbers!
 
 ## Controls
-Holding shift will move the cursor in 0.25 increments. Drag the numbers around with the cursor. 
+Holding shift will move the cursor in 0.25 increments. Drag the numbers around with the cursor. To change operation press tab or click the rectangle where the operation symbol is displayed. 
